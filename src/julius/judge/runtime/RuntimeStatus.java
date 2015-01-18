@@ -1,4 +1,4 @@
-package julius.judge.re;
+package julius.judge.runtime;
 
 public enum RuntimeStatus {
 	TIME_LIMIT_EXCEEDED, MEMORY_LIMIT_EXCEEDED, RUNTIME_ERROR, NORMAL;

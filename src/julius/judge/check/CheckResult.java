@@ -1,4 +1,4 @@
-package julius.judge.re;
+package julius.judge.check;
 
 public class CheckResult {
 	private int score;

@@ -1,4 +1,4 @@
-package julius.judge.re;
+package julius.judge.runtime;
 
 public class RuntimeResult {
 	private int timeUsed, memoryUsed;

@@ -23,7 +23,6 @@ public class DiffChecker extends Checker {
 	
 	@Override
 	protected CheckResult checkIt(File input, File answer, File output, int full) throws Exception{
-		//TODO Diff
 		answerReader = new FileReader(answer);
 		outputReader = new FileReader(output);
 		answerBReader = new BufferedReader(answerReader);

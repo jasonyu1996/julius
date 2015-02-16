@@ -2,36 +2,31 @@ package julius.judge.check;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
+import java.io.InputStreamReader;
 
 public class SpecialChecker extends Checker {
 	private String cmd;
-	private File resultFile;
-	private FileReader reader;
 	private BufferedReader bReader;
 	
-	public SpecialChecker(String cmd, File resultFile){
+	public SpecialChecker(String cmd){
 		this.cmd = cmd;
-		this.resultFile = resultFile;
 	}
 	
 	private void closeAll() throws Exception{
 		bReader.close();
-		reader.close();
 	}
 	
 	@Override
 	protected CheckResult checkIt(File input, File answer, File output, int full)
 			throws Exception {
 		Process pro = Runtime.getRuntime().exec(cmd, new String[]{input.getAbsolutePath(), 
-				answer.getAbsolutePath(), output.getAbsolutePath(), Integer.toString(full), resultFile.toString()});
+				answer.getAbsolutePath(), output.getAbsolutePath(), Integer.toString(full)});
 		int exitVal = pro.waitFor();
 		if(exitVal != 0)
 			return new CheckResult(0, "Special checker error!");
 		int score;
 		StringBuilder info = new StringBuilder();
-		reader = new FileReader(resultFile);
-		bReader = new BufferedReader(reader);
+		bReader = new BufferedReader(new BufferedReader(new InputStreamReader(pro.getInputStream())));
 		try{
 			String s = bReader.readLine();
 			score = Integer.parseInt(s);

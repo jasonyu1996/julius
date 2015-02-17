@@ -10,7 +10,10 @@ public class JudgeResult {
 	protected JudgeResult(CompileResult compileResult, TestcaseResult[] testcaseResults){
 		this.compileResult = compileResult;	
 		totalScore = 0;
-		this.testcaseResults = testcaseResults.clone();
+		if(testcaseResults == null)
+			this.testcaseResults = null;
+		else
+			this.testcaseResults = testcaseResults.clone();
 		if(compileResult.isCompileOk())
 			for(int i = 0; i < testcaseResults.length; i ++)
 				totalScore += testcaseResults[i].getScore();
@@ -25,6 +28,8 @@ public class JudgeResult {
 	}
 	
 	public TestcaseResult[] getTestcaseResults(){
+		if(testcaseResults == null)
+			return null;
 		return testcaseResults.clone();
 	}
 }

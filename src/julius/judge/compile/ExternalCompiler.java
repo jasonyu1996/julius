@@ -11,14 +11,18 @@ public class ExternalCompiler implements Compiler{
 	}
 	
 	@Override
-	public final CompileResult compile(File source){
+	public final CompileResult compile(File dir, String source){
 		try{
-			Process p = Runtime.getRuntime().exec(pattern.replaceAll("%", source.toString())
-					.replaceAll("%<", source.getName().
-							substring(0, Math.max(0, source.getName().lastIndexOf('.')))));
+		/*	Process p = Runtime.getRuntime().exec(pattern.replace("%<", new File(source.getParentFile(), source.getName().
+					substring(0, Math.max(0, source.getName().lastIndexOf('.')))).toString())
+					.replace("%", source.toString()));*/
+			Process p = Runtime.getRuntime().exec(pattern.replace("%<", 
+					source.substring(0, Math.max(0, source.lastIndexOf('.')))).
+					replace("%", source), null, dir);
+	//		Process p = Runtime.getRuntime().exec("ls");
 			int re = p.waitFor();
 			StringBuilder message = new StringBuilder();
-			BufferedReader outMes = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			BufferedReader outMes = new BufferedReader(new InputStreamReader(p.getErrorStream()));
 			String line;
 			while(true){
 				line = outMes.readLine();

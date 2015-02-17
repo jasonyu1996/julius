@@ -20,15 +20,16 @@ public class Launcher {
 	}
 	
 	private String getCommand(String sourceName){
-		return pattern.replaceAll("%", sourceName).
-				replaceAll("%<", sourceName.
-						substring(0, Math.max(0, sourceName.lastIndexOf('.'))));
+		return pattern.replace("%<", sourceName.
+				substring(0, Math.max(0, sourceName.lastIndexOf('.'))))
+				.replace("%", sourceName);
+				
 	}
 	
-	public RuntimeResult launch(File path, String sourceName, int timeLimit, int memoryLimit){
+	public RuntimeResult launch(String monitor, File path, String sourceName, int timeLimit, int memoryLimit){
 		try{
 			Process p = Runtime.getRuntime().
-					exec(new String[]{"./monitor", path.toString(), getCommand(sourceName), 
+					exec(new String[]{monitor, path.toString(), getCommand(sourceName), 
 							String.valueOf(timeLimit), String.valueOf(memoryLimit)});
 			int re = p.waitFor();
 			RuntimeResult result;
@@ -43,10 +44,10 @@ public class Launcher {
 		}
 	}
 	
-	public RuntimeResult launch(File path, String sourceName, int timeLimit, int memoryLimit, String in, String out){
+	public RuntimeResult launch(String monitor, File path, String sourceName, int timeLimit, int memoryLimit, String in, String out){
 		try{
 			Process p = Runtime.getRuntime().
-					exec(new String[]{"./monitor", path.toString(), getCommand(sourceName), 
+					exec(new String[]{monitor, path.toString(), getCommand(sourceName), 
 							String.valueOf(timeLimit), String.valueOf(memoryLimit), in, out});
 			int re = p.waitFor();
 			RuntimeResult result;

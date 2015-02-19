@@ -14,7 +14,31 @@ import julius.judge.runtime.RuntimeStatus;
 import julius.judge.runtime.Sandbox;
 import julius.judge.runtime.SandboxNotReadyException;
 
-public class Judger {
+/**
+ * <p>The Judger class provides a static method to carry out the judge routine.</p>
+ * 
+ * @author jason_yu
+ * @since Julius1.0
+ * */
+public final class Judger {
+	private Judger(){}
+	
+	/**
+	 * <p>Carries out a judge routine.</p>
+	 * 
+	 * @param source the source file
+	 * @param testcases the testcases in this judge task
+	 * @param compiler the compiler used to compile the source
+	 * @param sandbox the sandbox used to execute the code
+	 * @param command the command used to execute the code
+	 * @param in the input file name
+	 * @param out the output file name
+	 * @param redirect whether the standard input and output will be redirected
+	 * @return the judge result. The testcase results would be arranged corresponding to testcases.
+	 * @throws IOException if any I/O problem occurs
+	 * @throws SandboxNotReadyException if in the judge process the sandbox could not be initialised to be usable 
+	 * @since Julius1.0
+	 * */
 	public static JudgeResult judge(File source, Testcase[] testcases, Compiler compiler, Sandbox sandbox, Pattern command, String in, String out, boolean redirect) throws IOException, SandboxNotReadyException{
 		sandbox.init();
 		File targetPath = sandbox.getPath();

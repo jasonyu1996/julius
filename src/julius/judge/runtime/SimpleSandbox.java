@@ -42,6 +42,16 @@ public class SimpleSandbox implements Sandbox{
 		return Integer.valueOf(s);
 	}
 	
+	private RuntimeStatus getRuntimeStatus(int id){
+		if(id == 3)
+			return RuntimeStatus.TIME_LIMIT_EXCEEDED;
+		if(id == 4)
+			return RuntimeStatus.MEMORY_LIMIT_EXCEEDED;
+		if(id == 0)
+			return RuntimeStatus.NORMAL;
+		return RuntimeStatus.RUNTIME_ERROR;
+	}
+	
 	@Override
 	public RuntimeResult run(String command, int timeLimit, int memoryLimit) throws SandboxNotReadyException{
 		if(!ready)
@@ -53,7 +63,7 @@ public class SimpleSandbox implements Sandbox{
 			int re = p.waitFor();
 			RuntimeResult result;
 			BufferedReader res = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			result = new RuntimeResult(getNextInt(res), getNextInt(res), RuntimeStatus.getRuntimeStatus(re));
+			result = new RuntimeResult(getNextInt(res), getNextInt(res), getRuntimeStatus(re));
 			res.close();
 			
 			return result;
@@ -76,7 +86,7 @@ public class SimpleSandbox implements Sandbox{
 			int re = p.waitFor();
 			RuntimeResult result;
 			BufferedReader res = new BufferedReader(new InputStreamReader(p.getInputStream()));
-			result = new RuntimeResult(getNextInt(res), getNextInt(res), RuntimeStatus.getRuntimeStatus(re));
+			result = new RuntimeResult(getNextInt(res), getNextInt(res), getRuntimeStatus(re));
 			res.close();
 			
 			return result;

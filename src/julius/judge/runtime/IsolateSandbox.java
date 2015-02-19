@@ -3,7 +3,6 @@ package julius.judge.runtime;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class IsolateSandbox implements Sandbox{
@@ -61,26 +60,16 @@ public class IsolateSandbox implements Sandbox{
 		return true;
 	}
 	
-	private Process getProcess(String command, int timeLimit, int memoryLimit) throws IOException{
-		return Runtime.getRuntime().exec(new String[]{sandboxCmd, "--time=" + (timeLimit / 1000.0), "--extra-time=1", 
-				"--wall-time=" + (timeLimit / 1000.0 + 1.0),
-				"--mem=" + memoryLimit, "--run -- " + command});
-	}
-	
-	private Process getProcess(String command, int timeLimit,
-			int memoryLimit, String in, String out) throws IOException{
-		return Runtime.getRuntime().exec(new String[]{sandboxCmd, "--time=" + (timeLimit / 1000.0), "--extra-time=1", 
-				"--wall-time=" + (timeLimit / 1000.0 + 1.0),
-				"--mem=" + memoryLimit, "--stdin=" + in, "--stdout=" + out, "--run -- " + command});
-	}
-	
 	@Override
 	public RuntimeResult run(String command, int timeLimit,
 			int memoryLimit) throws SandboxNotReadyException{
 		if(!isReady())
 			throw new SandboxNotReadyException("RuntimeSandbox not ready yet when run() was invoked!");
 		try{
-			Process p = getProcess(command, timeLimit, memoryLimit);
+			Process p = Runtime.getRuntime().exec(new String[]{sandboxCmd, "--meta=" + metaFile, "--time=" + (timeLimit / 1000.0), "--extra-time=1", 
+					"--wall-time=" + (timeLimit / 1000.0 + 1.0),
+					"--mem=" + memoryLimit, "--run", "--", command});
+	//		Process p = Runtime.getRuntime().exec("./ha");
 			return getResult(p);
 		} catch(Exception e){
 			return new RuntimeResult(0, 0, RuntimeStatus.RUNTIME_ERROR);
@@ -93,7 +82,9 @@ public class IsolateSandbox implements Sandbox{
 		if(!isReady())
 			throw new SandboxNotReadyException("RuntimeSandbox not ready yet when run() was invoked!");
 		try{
-			Process p = getProcess(command, timeLimit, memoryLimit, in, out);
+			Process p = Runtime.getRuntime().exec(new String[]{sandboxCmd, "--meta=" + metaFile, "--time=" + (timeLimit / 1000.0), "--extra-time=1", 
+					"--wall-time=" + (timeLimit / 1000.0 + 1.0),
+					"--mem=" + memoryLimit, "--stdin=" + in, "--stdout=" + out, "--run" ,"--", command});
 			return getResult(p);
 		} catch(Exception e){
 			return new RuntimeResult(0, 0, RuntimeStatus.RUNTIME_ERROR);
@@ -102,8 +93,18 @@ public class IsolateSandbox implements Sandbox{
 
 	private RuntimeResult getResult(Process p) throws Exception{
 		int re = p.waitFor();
+
+/*		BufferedReader reader = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+		String ss;
+		while(true){
+			ss = reader.readLine();
+			if(ss == null)
+				break;
+			System.out.println(ss);
+		}*/
 		if(re != 0 && re != 1)
 			return new RuntimeResult(0, 0, RuntimeStatus.RUNTIME_ERROR);
+	//	reader.close();
 		int ti = 0, me = 0;
 		RuntimeStatus status = RuntimeStatus.NORMAL;
 		BufferedReader metaReader = new BufferedReader(new FileReader(metaFile));

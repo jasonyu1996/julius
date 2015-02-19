@@ -2,3 +2,6 @@
 *.class
 /monitor
 /test/
+/ha
+/ha.cpp
+/isolate
